@@ -1,6 +1,4 @@
-from pip._internal import main as pipmain
-
-pipmain(['install', 'PyQt5'])
+pip install -r requirements.txt
 import sys
 import sqlite3
 # Библиотеки за для форм
