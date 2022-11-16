@@ -1,4 +1,4 @@
-pip install -r requirements.txt
+
 import sys
 import sqlite3
 # Библиотеки за для форм
