@@ -1,4 +1,3 @@
-
 import sys
 import sqlite3
 # Библиотеки за для форм
@@ -120,6 +119,9 @@ class BuildingCalc(QMainWindow):
         self.R_s = 350
         self.R_sc = 350
         self.R_b = 14.5
+        self.a = 500
+        self.b = 500
+        self.h = 500
 
     def settingBuildCalc(self):
         uic.loadUi("Main_form.ui", self)
@@ -135,9 +137,47 @@ class BuildingCalc(QMainWindow):
             self.comboBox.addItem(i[0])
         for i in armatura:
             self.comboBox_2.addItem(i[0])
+
+        d = {}
+        with open("aAndbAndh.txt") as file:
+            for line in file:
+                key, *value = line.split()
+                d[key] = value
+        self.a_list = d.get('a')
+        self.b_list = d.get('b')
+        self.h_list = d.get('h')
+
+        for i in self.a_list:
+            self.comboBox_3.addItem(i)
+        for i in self.b_list:
+            self.comboBox_4.addItem(i)
+        for i in self.h_list:
+            self.comboBox_5.addItem(i)
+
+
         self.comboBox.activated[str].connect(self.selectcombobeton)
         self.comboBox_2.activated[str].connect(self.selectcomboarmatura)
+        self.comboBox_3.activated[str].connect(self.selectcomboa)
+        self.comboBox_4.activated[str].connect(self.selectcombob)
+        self.comboBox_5.activated[str].connect(self.selectcomboh)
     # заполняется при выборе на форме
+
+    def selectcomboa(self):
+        self.meanbox = str(self.comboBox_3.currentText())
+        for i in self.a_list:
+            if self.meanbox == i:
+                self.a = int(i)
+    def selectcombob(self):
+        self.meanbox = str(self.comboBox_4.currentText())
+        for i in self.b_list:
+            if self.meanbox == i:
+                self.b = int(i)
+    def selectcomboh(self):
+        self.meanbox = str(self.comboBox_5.currentText())
+        for i in self.h_list:
+            if self.meanbox == i:
+                self.h = int(i)
+
     def selectcombobeton(self):
         self.meanbox = str(self.comboBox.currentText())
         for i in beton:
@@ -175,30 +215,23 @@ class BuildingCalc(QMainWindow):
 
     def print_result(self):
         self.calc = Calc()
-        self.b = self.first_size.text()
-        self.h = self.second_size.text()
         self.N = self.third_size.text()
         self.M = self.four_size.text()
-        self.a = self.five_size.text()
 
-        if not self.b.strip() or not self.h.strip() or not self.a.strip() \
-                or not self.N.strip() or not self.M.strip():
+        if not self.N.strip() or not self.M.strip():
             self.string_result += ("Проверьте все ли поля заполнены!!!\n\n")
             self.take(self.string_result)
 
-        elif self.b.isdigit() == False or self.h.isdigit() == False or self.a.isdigit() == False \
-                or self.N.isdigit() == False or self.M.isdigit() == False:
+        elif self.N.isdigit() == False or self.M.isdigit() == False:
             self.string_result = ("Не все поля, введённые "
                                   "вами, являются числами!\n")
             self.take(self.string_result)
-        elif (float(self.b) < 0 or float(self.b) > 10000) or \
-                (float(self.h) < 0 or float(self.h) > 10000) or \
-                (float(self.N) < 0 or float(self.N) > 10000) or \
+        elif (float(self.N) < 0 or float(self.N) > 10000) or \
                 (float(self.M) < 0 or float(self.M) > 10000) or \
-                (float(self.a) < 0 or float(self.a) > 10000):
+                ((float(self.h) - float(self.a)) - float(self.a)) == 0:
+
             self.string_result = ("Вы вышли за диапазон допустимых значений,\n"
-                                  " пожалуйста ознакомьтесь "
-                                  "с допустимыми значениями в разделе Помощь ")
+                                  "пожалуйста ознакомьтесь с допустимыми значениями в разделе Помощь ")
         else:
             self.b = float(self.b)
             self.h = float(self.h)
