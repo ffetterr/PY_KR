@@ -30,10 +30,10 @@ class Calc(QWidget):
     # функция выводит результат в тектэдит и записывает её в историю
     def returnres(self, result):
         self.textedit.setText(result)
-        text = open('txt.txt')
+        text = open('txt.txt', 'a+')
         history = text.read()
         text.close()
-        with open('txt.txt', 'w'): pass
+        with open('txt.txt', 'a+'): pass
 
         text = open('txt.txt', 'a+')
         text.write(result)
